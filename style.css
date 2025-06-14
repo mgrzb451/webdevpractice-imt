@@ -1,0 +1,241 @@
+:root {
+  --color-purple-dark: hsl(248, 68%, 15%);
+  --color-teal: hsl(169, 70%, 51%);
+  --color-offwhite: hsl(0, 0%, 95%);
+  --color-grey-dark: hsl(0, 0%, 15%);
+  --color-grey-dark-purple-tint: hsl(248, 0%, 15%);
+  --color-yellow: hsl(45, 85%, 75%);
+  --color-red: hsl(5, 87%, 40%);
+}
+
+*, *::before, *:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+body {
+  width: 100vw;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  font-family: "Nunito", sans-serif;
+  background-color: var(--color-yellow);
+}
+
+.collapsible-container {
+  display: flex;
+  background-color: var(--color-purple-dark);
+  height: 100vh; /*This is the fix for scrolling - one of parents needs set height (not min-height) */
+}
+
+#collapsible-input {
+  display: none;
+}
+
+.collapse-icon {
+  display: block;
+  cursor: pointer;
+  position: relative;
+  color: white;
+  & div {
+    transition: transform 1000ms;
+  }
+}
+
+#collapsible-input:checked ~.sidebar {
+  /* extend the sidebar */
+  width: 400px;
+}
+
+#collapsible-input:checked ~.collapse-icon div {
+  transform-origin: center; /*Not necessary, but keeping for NOTE*/
+  transform: rotateZ(-180deg);
+}
+
+.sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr auto;
+  /* collapsible start */
+  width: 0px;
+  overflow-x: hidden;
+  /* collapsible end */
+  justify-items: center;  
+  color: var(--color-teal);
+  transition: width 1000ms;
+
+  .logo {
+    grid-row: 1;
+    background: linear-gradient(to right bottom,
+      hsl(from var(--color-teal) h s 80%),
+      var(--color-teal),
+      hsl(from var(--color-teal) h s 80%));
+    
+    width: 200px;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid hsl(from var(--color-teal) h s 20%);
+    margin-block: 40px;
+  }
+
+  .activity-form {
+    grid-row: 2;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* since there are 4 columns and items span 2 outer ones we add a 5th middle column as a single column gap*/
+    grid-template-rows: repeat(2, 1fr) auto;
+    row-gap: .75rem;
+    justify-items: start;
+    align-items: center;
+    padding-inline-start: 20px;
+
+    .activity-form-input {
+      /* common styles go here */
+      display: grid;
+      grid-template-columns: subgrid; /*NOTE about subgrid, spans */
+      column-gap: 1rem;
+    }
+
+    .activity-type-dropdown {
+      grid-row: 1;
+      grid-column: 1 / span 2;
+    }
+    .activity-duration-input {
+      grid-row: 1;
+      grid-column: -1 / span 2;
+    }
+    .sleep-input {
+      grid-row: 2;
+      grid-column: 1 / span 2;
+    }
+    .walked-input {
+      grid-row: 2;
+      grid-column: -1 / span 2;
+    }
+    .environment-type-dropdown {
+      grid-column: -1 / span 2;
+      grid-row: 1
+    }
+    .trip-length-input {
+      grid-column: 1 / span 2;
+      grid-row: 2;
+    }
+  }
+  .form-buttons-container {
+    padding-block-start: .5rem;
+    grid-row: 3;
+    grid-column: 1 / 8;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    .button-form {
+      padding-block: .25rem;
+      padding-inline: .35rem;
+      border-radius: 5px;
+
+      &:hover, &:focus {
+        filter: brightness(.8);
+        border: 2px solid var(--color-grey-dark-purple-tint);
+      }
+    }
+    .button-form svg {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .button-cancel {
+      background-color: white;
+
+      svg {
+        fill: var(--color-red);
+      }
+    }
+    .button-confirm {
+      background-color: hsl(84, 100%, 80%);
+
+      svg {
+        fill: var(--color-purple-dark);
+      }
+    }
+  }
+
+  .activity-form-input-hidden {
+      display: none;
+      opacity: 0;
+  }
+
+  .activities-list {
+    grid-row: 3;
+    justify-self: center;
+    width: 100%;
+    overflow-y: auto;
+    display: grid;
+    grid-auto-flow: row;
+    grid-auto-rows: max-content;
+    row-gap: 1rem;
+    list-style: none;
+
+    .activity-record {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(2, 1fr);
+      background-color: hsl(from var(--color-purple-dark) h s 20%);
+      padding-block: 1rem;
+      padding-inline: 1rem;
+    }
+
+    .activity-record-walk {
+      border-inline-start: 5px solid green;
+    }
+    .activity-record-trip {
+      border-inline-start: 5px solid hotpink;
+    }
+
+    .activity-record-details {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .footer {
+    grid-row: -1;
+    
+  }
+}
+
+#map {
+  grid-column: 2;
+  height: 100%;
+  width: 100vw;
+}
+
+.leaflet-popup {
+  /* container outside of the popup dialog */
+}
+
+.leaflet-popup-content-wrapper {
+  /* the actual popup dialog */
+  border-radius: 0px;
+  border-inline-start: 5px solid blue;
+  background-color: red;
+  color: yellow;
+}
+
+#popup-coords {
+  color: white;
+  font-family: monospace;
+  font-weight: bold;
+  -webkit-text-stroke: 1px hotpink;
+}

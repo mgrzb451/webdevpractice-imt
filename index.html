@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+  <script type="module" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+  <!-- Our .js and .css files AFTER externals that we use in them -->
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./script.js"></script>
+
+  <title>Itinerant Misia Tracker</title>
+</head>
+<body>
+  <div class="collapsible-container">
+    <input type="checkbox" id="collapsible-input" checked>
+    <section class="sidebar">
+      <img class="logo" src="./assets/imt-logo.png" alt="IMT logo" width="327" height="178">
+
+      <form id="activity-form" class="activity-form activity-form-input-hidden">
+        <div id="activity-type-dropdown" class="activity-type-dropdown activity-form-input">
+          <label for="activity-type-select">Type</label>
+          <select name="" id="activity-type-select">
+            <button>
+              <selectedcontent></selectedcontent>
+            </button>
+
+              <option value="">Activity type</option>
+              <option value="walk">
+                <span class="activity-type-icon">👟</span>
+                <span class="activity-type-name">Walk</span>
+              </option>
+              <option value="trip">
+                <span class="activity-type-icon">🚙</span>
+                <span class="activity-type-name">Road trip</span>
+              </option>
+
+          </select>
+        </div>
+        
+        <div id="activity-duration-input" class="activity-duration-input activity-form-input activity-form-input-hidden">
+          <label for="duration">Duration</label>
+          <input type="text" id="duration" name="duration" inputmode="numeric" minlength="1" maxlength="4" size="10" placeholder="in minutes">
+        </div>
+
+        <div id="sleep-input" class="sleep-input activity-form-input activity-form-input-hidden">
+          <label for="sleep">Slept</label>
+          <input type="text" id="sleep" name="sleep" inputmode="numeric" minlength="1" maxlength="4" size="10" placeholder="in minutes">
+        </div>
+
+        <div id="walked-input" class="walked-input activity-form-input activity-form-input-hidden">
+          <label for="walked">Walked</label>
+          <input type="text" inputmode="numeric" id="walked" name="walked" minlength="1" maxlength="4" size="10" placeholder="in meters">
+        </div>
+
+        <div id="environment-type-dropdown" class="environment-type-dropdown activity-form-input activity-form-input-hidden">
+          <label for="environment-type-select">Environment</label>
+          <select name="" id="environment-type-select">
+            <button>
+              <selectedcontent></selectedcontent>
+            </button>
+
+              <option value="">Environment</option>
+              <option value="urban">
+                <span class="environment-type-icon">🏙️</span>
+                <span class="environment-type-name">Urban</span>
+              </option>
+              <option value="mountains">
+                <span class="environment-type-icon">⛰</span>
+                <span class="environment-type-name">Mountains</span>
+              </option>
+              <option value="nature">
+                <span class="environment-type-icon">🌲</span>
+                <span class="environment-type-name">Nature</span>
+              </option>
+          </select>
+        </div>
+
+        <div id="trip-length-input" class="trip-length-input activity-form-input activity-form-input-hidden">
+          <label for="trip-length">Length</label>
+          <input type="text" inputmode="numeric" id="trip-length" name="trip-length" minlength="1" maxlength="2" size="10" placeholder="in days">
+        </div>
+
+        <div id="form-buttons-container" class="form-buttons-container activity-form-input-hidden">
+          <button id="button-new-record-cancel" class="button-form button-cancel">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+            </svg>
+          </button>
+          <button id="button-add-new-record" type="submit" form="activity-form" class="button-form button-confirm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <ul id="activities-list" class="activities-list">
+        <template id="template-record-walk">
+          <li class="activity-record activity-record-walk" data-activity-id="0">
+            <h2 class="activity-record-heading">Walk on <time datetime="1887-12-01">1887-12-01</time></h2>
+            <div class="activity-record-details">
+              <p>Duration: ⌚<span>30min</span></p>
+              <p>Slept: 😴<span>2h</span></p>
+              <p>Walked: 🦶<span>150m</span></p>
+            </div>
+          </li>
+        </template>
+
+        <template id="template-record-trip">
+          <li class="activity-record activity-record-trip" data-activity-id="0">
+            <h2 class="activity-record-heading">Road trip on <time datetime="1887-12-01">1887-12-01</time></h2>
+            <div class="activity-record-details">
+              <p>Length: ⏳<span>3</span> days</p>
+              <p>Environment: <span>🏙 Urban</span></p>
+            </div>
+          </li>
+        </template>
+      </ul>
+  
+      <footer class="footer">Footer text</footer>
+    
+    </section>
+    <label class="collapse-icon" for="collapsible-input">
+      <div>
+        ▶
+      </div>
+    </label>
+  </div>
+
+  <div id="map"></div>
+  <template id="activity-popup">
+    <div class="activity-popup">
+      <h1>This is a popup</h1>
+      <h2>It's located at <span id="popup-coords">xx</span></h2>
+      <p>It has some content</p>
+    </div>
+  </template>
+</body>
+
+</html>
+
+<!-- ICONS -->
+<!-- trash -->
+ <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 960" >
+  <path d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z"/>
+</svg> -->
